@@ -23,15 +23,19 @@ npm install
 npm start (for development)
 ```
 
+DB MongoDB: <br>
+  * Name of the DB : **lyon**<br>
+  
+**If change modify the .env File**
 ### Api Urls
-#### Cron Urls
+##### Cron Urls
  * http://localhost:4040/api/cron/velov
    * Get Velov Information from download.data.grandlyon.com and save them in the MongoDB DB
  * http://localhost:4040/api/cron/district
    * Get District Information from download.data.grandlyon.com and save them in the MongoDB DB
  * http://localhost:4040/api/cron/touristicArea
    * Get Touristic area Information from download.data.grandlyon.com and save them in the MongoDB DB
-#### GetAll Urls
+##### GetAll Urls
   * http://localhost:4040/api/data/velov
     * Get All Velov of the MongoDB DB
   * http://localhost:4040/api/data/district
@@ -39,7 +43,7 @@ npm start (for development)
   * http://localhost:4040/api/data/touristicArea
     * Get All Touristic area of the MongoDB DB
 
-#### GetAllNear Urls
+##### GetAllNear Urls
   * http://localhost:4040/api/data/velov/:long/:latt
     * Get All Velov of the MongoDB DB near the Point
   * http://localhost:4040/api/data/district/:long/:latt
