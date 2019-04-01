@@ -1,6 +1,6 @@
 import { Geometry } from "./geometry";
 
-export class Velovs {
+export class Velov {
   _id: string;
   address2: string;
   name: string;
