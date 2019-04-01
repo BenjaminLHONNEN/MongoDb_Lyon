@@ -16,6 +16,7 @@ import { AppRoutingModule } from './app-routing/app-routing.module';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { MapDistrictComponent } from './pages/map-district/map-district.component';
+import { MapVelovComponent } from './pages/map-velov/map-velov.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { MapDistrictComponent } from './pages/map-district/map-district.componen
     HeaderComponent,
     HomeComponent,
     MapDistrictComponent,
+    MapVelovComponent,
   ],
   imports: [
     BrowserModule,
