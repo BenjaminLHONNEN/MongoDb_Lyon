@@ -1,3 +1,36 @@
-<p>
-  map-velov works!
-</p>
+<div style="display: flex;">
+  <div class="map" id="map"></div>
+  <div class="menu">
+    <div *ngFor="let Velov of lstVelovArray" class="menu-item" (click)="clicOn(Velov)">
+      <p>{{Velov.properties.name}}</p>
+    </div>
+    <div class="menu-detail" #detailElement>
+      <a (click)="closeDetail()" style="cursor: pointer">Fermer</a>
+      <div *ngIf="selectedVelov">
+        <h3>{{selectedVelov.properties.name}}</h3>
+        <p>{{selectedVelov.properties.commune}}</p>
+        <p>{{selectedVelov.properties.address}}<span *ngIf="selectedVelov.properties.address2 != ''">, {{selectedVelov.properties.address2}}</span></p>
+        <p>Nb de stands disponibles: {{selectedVelov.properties.available_bike_stands}}</p>
+        <p>Nb de velov disponibles : {{selectedVelov.properties.available_bikes}}</p>
+
+        <ng-container *ngIf="selectedVelov.properties.availability === 'Vert'; else elseTemplateNotAvailability">
+          <p [class.is-open]="selectedVelov.properties.availability === 'Vert'">Disponibilité : {{selectedVelov.properties.availability}}
+          </p>
+        </ng-container>
+        <ng-template #elseTemplateNotAvailability>
+          <p [class.is-orange]="selectedVelov.properties.availability === 'Orange'">Disponibilité : {{selectedVelov.properties.availability}}
+          </p>
+        </ng-template>
+
+        <ng-container *ngIf="selectedVelov.properties.status === 'OPEN'; else elseTemplateClose">
+          <p [class.is-open]="selectedVelov.properties.status === 'OPEN'">Status : {{selectedVelov.properties.status}}
+          </p>
+        </ng-container>
+        <ng-template #elseTemplateClose>
+          <p [class.is-close]="selectedVelov.properties.status === 'CLOSE'">Status : {{selectedVelov.properties.status}}
+          </p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

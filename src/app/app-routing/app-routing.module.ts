@@ -1,10 +1,10 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {AuthGuard} from '../auth/auth-guard.service';
-import {HomeComponent} from '../home/home.component';
-import {MapDistrictComponent} from '../pages/map-district/map-district.component';
-import {MapVelovComponent} from '../pages/map-velov/map-velov.component';
-import {MapTouristicAreaComponent} from '../pages/map-touristic-area/map-touristic-area.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from '../auth/auth-guard.service';
+import { HomeComponent } from '../home/home.component';
+import { MapDistrictComponent } from '../pages/map-district/map-district.component';
+import { MapVelovComponent } from '../pages/map-velov/map-velov.component';
+import { MapTouristicAreaComponent } from '../pages/map-touristic-area/map-touristic-area.component';
 
 const routes: Routes = [
   {
@@ -17,10 +17,10 @@ const routes: Routes = [
     path: 'admin',
     loadChildren: 'app/admin/admin.module#AdminModule'
   },
-  {path: 'map-district', component: MapDistrictComponent},
-  {path: 'map-touristic-area', component: MapTouristicAreaComponent},
+  { path: 'map-district', component: MapDistrictComponent },
+  { path: 'map-touristic-area', component: MapTouristicAreaComponent },
   {
-    path: 'velov',
+    path: 'map-velov',
     component: MapVelovComponent
   }
 ];
