@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {AuthGuard} from '../auth/auth-guard.service';
 import {HomeComponent} from '../home/home.component';
 import {MapDistrictComponent} from '../pages/map-district/map-district.component';
+import {MapVelovComponent} from '../pages/map-velov/map-velov.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
     loadChildren: 'app/admin/admin.module#AdminModule'
   },
   {path: 'map-district', component: MapDistrictComponent},
+  {
+    path: 'velov',
+    component: MapVelovComponent
+  }
 ];
 
 @NgModule({
