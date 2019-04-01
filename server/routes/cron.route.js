@@ -48,7 +48,10 @@ async function getDistrict(req, res) {
               district[k] = o.properties[k];
             }
           }
-          await DistrictSequelize.update(district);
+          await DistrictSequelize.update(
+            district,
+            {where: {gid: o.properties.gid}}
+          );
         } else {
           await DistrictSequelize.create(o.properties);
         }
@@ -86,7 +89,10 @@ async function getTouristicAreaUrl(req, res) {
               touristicArea[k] = o.properties[k];
             }
           }
-          await TouristicAreaSequelize.update(touristicArea);
+          await TouristicAreaSequelize.update(
+            touristicArea,
+            {where: {gid: o.properties.gid}}
+          );
         } else {
           await TouristicAreaSequelize.create(o.properties);
         }
@@ -123,7 +129,10 @@ async function getVelov(req, res) {
               velov[k] = o.properties[k];
             }
           }
-          await VelovSequelize.update(velov);
+          await VelovSequelize.update(
+            velov,
+            {where: {gid: o.properties.gid}}
+          );
         } else {
           await VelovSequelize.create(o.properties);
         }
