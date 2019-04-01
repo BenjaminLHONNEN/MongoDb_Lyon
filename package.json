@@ -44,6 +44,7 @@
     "http-errors": "^1.6.3",
     "joi": "^13.3.0",
     "jsonwebtoken": "^8.2.1",
+    "mapbox-gl": "^0.53.1",
     "method-override": "^2.3.10",
     "mongoose": "^5.1.0",
     "morgan": "^1.9.1",
