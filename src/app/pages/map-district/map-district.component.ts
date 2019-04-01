@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DistrictService} from '../../services/district/district.service';
 import * as mapboxgl from 'mapbox-gl';
-import {DistrictCollection} from '../../models/district/district-model';
+import {DistrictCollection, DistrictModel} from '../../models/district/district-model';
 
 @Component({
   selector: 'app-map-district',
@@ -18,12 +18,14 @@ export class MapDistrictComponent implements OnInit {
   source: any;
   districts: any;
 
+  districArray: Array<DistrictModel>;
+
   constructor(private districtService: DistrictService) {
   }
 
   ngOnInit() {
     console.log('ngOnInit');
-    this.districts = this.districtService.getDistrictNear(this.long, this.lat);
+    this.districts = this.districtService.getDistricts();
     this.initialiseMap();
   }
 
@@ -45,47 +47,70 @@ export class MapDistrictComponent implements OnInit {
     console.log('buildMap');
     this.map = new mapboxgl.Map({
       container: 'map',
-      zoom: 13,
+      zoom: 10,
       style: this.style,
       center: [this.long, this.lat]
     });
     this.map.addControl(new mapboxgl.NavigationControl());
 
     this.map.on('load', (event) => {
-      console.log('map load');
-      this.map.addSource('districts', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: []
-        }
-      });
-      this.source = this.map.getSource('districts');
-
+      const colors = [
+        '#1abc9c',
+        '#16a085',
+        '#2ecc71',
+        '#27ae60',
+        '#3498db',
+        '#2980b9',
+        '#9b59b6',
+        '#8e44ad',
+        '#34495e',
+        '#2c3e50',
+        '#f1c40f',
+        '#f39c12',
+        '#e67e22',
+        '#d35400',
+        '#e74c3c',
+        '#c0392b',
+        '#ecf0f1',
+        '#bdc3c7',
+        '#95a5a6',
+        '#7f8c8d',
+      ];
+      let color = 0;
       this.districts.subscribe(districts => {
-        console.log(districts);
-        const data = new DistrictCollection(districts);
-        this.source.setData(data);
-      });
-
-      this.map.addLayer({
-        id: 'districts',
-        source: 'districts',
-        type: 'symbol',
-        layout: {
-          'text-field': '{message}',
-          'text-size': 24,
-          'text-trasform': 'uppercase',
-          'icon-image': 'rocket-15',
-          'text-offset': [0, 1.5]
-        },
-        paint: {
-          'text-color': '#F16624',
-          'text-halo-color': '#FFF',
-          'text-halo-width': 2
+        this.districArray = districts;
+        for (const i of districts) {
+          this.map.addSource('district' + i.properties.gid, {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: []
+            }
+          });
+          this.source = this.map.getSource('district' + i.properties.gid);
+          const data = new DistrictCollection([i]);
+          this.source.setData(data);
+          this.map.addLayer({
+            id: 'district' + i.properties.gid,
+            source: 'district' + i.properties.gid,
+            'type': 'fill',
+            layout: {},
+            paint: {
+              'fill-color': colors[color],
+              'fill-opacity': 0.8
+            }
+          });
+          color++;
+          if (color === colors.length) {
+            color = 0;
+          }
         }
       });
     });
+  }
+
+  clicOn(distric: DistrictModel) {
+    this.flyTo(distric.geometry.coordinates[0][0][0], distric.geometry.coordinates[0][0][1]);
   }
 
   flyTo(long, latt) {

@@ -13,6 +13,7 @@ $custom-typography: mat-typography-config(
 body {
   background-color: #f4f3f3;
   margin: 0;
+  overflow: hidden;
   app-root * {
     font-family: 'Exo', sans-serif;
   }

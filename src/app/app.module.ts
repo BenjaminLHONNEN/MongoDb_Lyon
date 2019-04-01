@@ -17,6 +17,7 @@ import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { MapDistrictComponent } from './pages/map-district/map-district.component';
 import { MapVelovComponent } from './pages/map-velov/map-velov.component';
+import { MapTouristicAreaComponent } from './pages/map-touristic-area/map-touristic-area.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { MapVelovComponent } from './pages/map-velov/map-velov.component';
     HomeComponent,
     MapDistrictComponent,
     MapVelovComponent,
+    MapTouristicAreaComponent,
   ],
   imports: [
     BrowserModule,

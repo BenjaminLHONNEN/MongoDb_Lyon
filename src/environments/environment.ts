@@ -8,6 +8,7 @@ export const environment = {
          UrlApi: "http://localhost:4040/api",
          mapbox: {
            accessToken:
-             "pk.eyJ1IjoiYmFwdGR1IiwiYSI6ImNqdHg4cjVzajI4cmM0ZGxsbXp2OGJwMWkifQ.XjcxMyGNEcB9QjXnu98yyg"
+             // "pk.eyJ1IjoiYmFwdGR1IiwiYSI6ImNqdHg4cjVzajI4cmM0ZGxsbXp2OGJwMWkifQ.XjcxMyGNEcB9QjXnu98yyg"
+             "pk.eyJ1IjoiYmVuamFtaW5saG9ubmVuIiwiYSI6ImNqbm13c3cxajFydTgzdnRhNDNxdzI0YXEifQ.a8GzbpfNT1G85ZuoEqj7qQ"
          }
        };

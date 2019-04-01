@@ -16,6 +16,10 @@ export class DistrictService {
     return this.http.get('http://localhost:4040/api/data/district/' + long + '/' + latt);
   }
 
+  getDistricts() {
+    return this.http.get('http://localhost:4040/api/data/district');
+  }
+
   getDistrictDetail(gid) {
     return this.http.get('http://localhost:4040/api/data/district/' + gid);
   }

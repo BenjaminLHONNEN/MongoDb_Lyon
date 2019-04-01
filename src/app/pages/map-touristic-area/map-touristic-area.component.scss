@@ -1,0 +1,33 @@
+.map{
+  height: 90vh;
+  width: 80vw;
+}
+.menu{
+  height: 90vh;
+  width: 20vw;
+  padding: 20px;
+  background-color: #3F3F3F;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  color: white;
+  position: relative;
+  .menu-item{
+    cursor: pointer;
+  }
+}
+
+.menu-detail.display{
+  left: 0;
+}
+.menu-detail{
+  z-index: 1000;
+  position: absolute;
+  width: 20vw;
+  left: 100%;
+  top: 0;
+  bottom: 0;
+  background-color: #f4f3f3;
+  color: #3F3F3F;
+  padding: 20px;
+  transition: left 0.5s;
+}

@@ -12,7 +12,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 const routes = require('../routes/index.route');
 const config = require('./config');
-const passport = require('./passport')
+const passport = require('./passport');
 
 const app = express();
 
@@ -64,7 +64,7 @@ app.use('/api/', routes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-  const err = new httpError(404)
+  const err = new httpError(404);
   return next(err);
 });
 

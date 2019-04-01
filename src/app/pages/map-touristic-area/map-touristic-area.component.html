@@ -1,0 +1,19 @@
+<div style="display: flex;">
+  <div class="map" id="map"></div>
+  <div class="menu">
+    <div *ngFor="let touristicArea of touristicAreasArray" class="menu-item" (click)="clicOn(touristicArea)">
+      <p>{{touristicArea.properties.nom}}</p>
+    </div>
+    <div class="menu-detail" #detailElement>
+      <a (click)="closeDetail()" style="cursor: pointer">Fermer</a>
+      <div *ngIf="touristicArea">
+        <h3>{{touristicArea.properties.nom}}</h3>
+        <p>{{touristicArea.properties.adresse}}</p>
+        <p>{{touristicArea.properties.commune}}</p>
+        <p>Tel: {{touristicArea.properties.telephone}}</p>
+        <p>Email: {{touristicArea.properties.email}}</p>
+        <p>Site web : <a target="_blank" [href]="touristicArea.properties.siteweb">{{touristicArea.properties.siteweb}}</a></p>
+      </div>
+    </div>
+  </div>
+</div>
