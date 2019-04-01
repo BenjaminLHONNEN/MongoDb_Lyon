@@ -47,6 +47,7 @@
     "method-override": "^2.3.10",
     "mongoose": "^5.1.0",
     "morgan": "^1.9.1",
+    "mysql2": "^1.6.5",
     "ng2-dragula": "^1.5.0",
     "nodemon": "^1.17.5",
     "passport": "^0.4.0",
@@ -55,6 +56,7 @@
     "request": "^2.88.0",
     "rxjs": "6.2.0",
     "rxjs-compat": "^6.0.0-rc.0",
+    "sequelize": "^5.2.8",
     "swagger-ui-express": "^3.0.9",
     "webpack-dev-server": "^3.1.10",
     "zone.js": "0.8.26"

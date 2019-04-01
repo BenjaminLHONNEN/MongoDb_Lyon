@@ -4,22 +4,47 @@ const passport = require('passport');
 const asyncHandler = require('express-async-handler');
 const cronController = require('../controllers/cron.controller');
 
+const VelovSequelize = require('../sequelize/velov.sequelize');
+const DistrictSequelize = require('../sequelize/distric.sequelize');
+const TouristicAreaSequelize = require('../sequelize/touristic-site.sequelize');
+
 const router = express.Router();
 module.exports = router;
 
 
-router.get("/velov", asyncHandler(getVelov));
-router.get("/district", asyncHandler(getDistrict));
-router.get("/touristicArea", asyncHandler(getTouristicAreaUrl));
+router.get("/velov", asyncHandler(getAllVelov));
+router.get("/district", asyncHandler(getAllDistrict));
+router.get("/touristicArea", asyncHandler(getAllTouristicAreaUrl));
 
-async function getVelov(req, res) {
+async function getAllVelov(req, res) {
   res.json(await cronController.getAllVelov());
 }
-async function getDistrict(req, res){
+async function getAllDistrict(req, res){
   res.json(await cronController.getAllDistrict());
 }
-async function getTouristicAreaUrl(req, res){
+async function getAllTouristicAreaUrl(req, res){
   res.json(await cronController.getAllTouristicArea());
+}
+
+
+router.get("/velov/:gid", asyncHandler(getVelov));
+router.get("/district/:gid", asyncHandler(getDistrict));
+router.get("/touristicArea/:gid", asyncHandler(getTouristicAreaUrl));
+
+async function getVelov(req, res) {
+  res.json(await VelovSequelize.findOne({
+    where: {gid: req.params.gid}
+  }));
+}
+async function getDistrict(req, res){
+  res.json(await DistrictSequelize.findOne({
+    where: {gid: req.params.gid}
+  }));
+}
+async function getTouristicAreaUrl(req, res){
+  res.json(await TouristicAreaSequelize.findOne({
+    where: {gid: req.params.gid}
+  }));
 }
 
 
