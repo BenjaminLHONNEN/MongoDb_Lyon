@@ -1,0 +1,57 @@
+
+<div style="display: flex">
+  <div class="map" id="map"></div>
+  <div class="menu">
+    <div>
+      <div>
+        <input style="width: 100%" type="text" (keyup)="onSearchKeyPress($event)">
+      </div>
+      <div>
+        <div style="width: 100%" *ngIf="adresses">
+          <div *ngFor="let ad of adresses.features">
+            {{ad.properties.label}}
+            <button (click)="goToSearch(ad)"> > </button>
+          </div>
+        </div>
+      </div>
+      <div>
+      </div>
+    </div>
+    <div class="menu-detail" #detailElement>
+      <a (click)="closeDetail()" style="cursor: pointer">Fermer</a>
+      <div *ngIf="detailTouristicArea">
+        <h3>{{detailTouristicArea.properties.nom}}</h3>
+        <p>{{detailTouristicArea.properties.adresse}}</p>
+        <p>{{detailTouristicArea.properties.commune}}</p>
+        <p>Tel: {{detailTouristicArea.properties.telephone}}</p>
+        <p>Email: {{detailTouristicArea.properties.email}}</p>
+        <p>Site web : <a target="_blank" [href]="detailTouristicArea.properties.siteweb">{{detailTouristicArea.properties.siteweb}}</a></p>
+      </div>
+      <div *ngIf="detailVelov">
+        <h3>{{detailVelov.properties.name}}</h3>
+        <p>{{detailVelov.properties.commune}}</p>
+        <p>{{detailVelov.properties.address}}<span *ngIf="detailVelov.properties.address2 != ''">, {{detailVelov.properties.address2}}</span></p>
+        <p>Nb de stands disponibles: {{detailVelov.properties.available_bike_stands}}</p>
+        <p>Nb de velov disponibles : {{detailVelov.properties.available_bikes}}</p>
+
+        <ng-container *ngIf="detailVelov.properties.availability === 'Vert'; else elseTemplateNotAvailability">
+          <p [class.is-open]="detailVelov.properties.availability === 'Vert'">Disponibilité : {{detailVelov.properties.availability}}
+          </p>
+        </ng-container>
+        <ng-template #elseTemplateNotAvailability>
+          <p [class.is-orange]="detailVelov.properties.availability === 'Orange'">Disponibilité : {{detailVelov.properties.availability}}
+          </p>
+        </ng-template>
+
+        <ng-container *ngIf="detailVelov.properties.status === 'OPEN'; else elseTemplateClose">
+          <p [class.is-open]="detailVelov.properties.status === 'OPEN'">Status : {{detailVelov.properties.status}}
+          </p>
+        </ng-container>
+        <ng-template #elseTemplateClose>
+          <p [class.is-close]="detailVelov.properties.status === 'CLOSE'">Status : {{detailVelov.properties.status}}
+          </p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

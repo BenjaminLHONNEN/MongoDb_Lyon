@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
@@ -11,15 +11,16 @@ export class TouristicAreaService {
   constructor(private http: HttpClient) {
     mapboxgl.accessToken = environment.mapbox.accessToken;
   }
-  getDistrictNear(long, latt) {
-    return this.http.get('http://localhost:4040/api/data/touristicArea/' + long + '/' + latt);
+
+  getTouristicAreaNear(long, latt, distance = 500) {
+    return this.http.get('http://localhost:4040/api/data/touristicArea/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
   }
 
-  getDistricts() {
+  getTouristicAreas() {
     return this.http.get('http://localhost:4040/api/data/touristicArea');
   }
 
-  getDistrictDetail(gid) {
+  getTouristicAreaDetail(gid) {
     return this.http.get('http://localhost:4040/api/data/touristicArea/' + gid);
   }
 }

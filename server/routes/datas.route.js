@@ -53,11 +53,27 @@ router.get("/district/:long/:latt", asyncHandler(getDistrictNear));
 router.get("/touristicArea/:long/:latt", asyncHandler(getTouristicAreaUrlNear));
 
 async function getVelovNear(req, res) {
-  res.json(await cronController.getAllVelovNear(req.params.long, req.params.latt, req.params.distance));
+  res.json(await cronController.getAllVelovNear(req.params.long, req.params.latt, req.query.distance));
 }
 async function getDistrictNear(req, res){
-  res.json(await cronController.getAllDistrictNear(req.params.long, req.params.latt, req.params.distance));
+  console.log(req.query.distance);
+  res.json(await cronController.getAllDistrictNear(req.params.long, req.params.latt, req.query.distance));
 }
 async function getTouristicAreaUrlNear(req, res){
-  res.json(await cronController.getAllTouristicAreaNear(req.params.long, req.params.latt, req.params.distance));
+  res.json(await cronController.getAllTouristicAreaNear(req.params.long, req.params.latt, req.query.distance));
+}
+
+router.get("/adress/:search", asyncHandler(searchAdress));
+async function searchAdress(req, res) {
+  request({
+    uri: "https://api-adresse.data.gouv.fr/search/?q=" + req.params.search + "&type=street&limit=5",
+    method: "GET",
+    timeout: 10000,
+    followRedirect: true,
+    maxRedirects: 10,
+    headers: {
+      'Content-Type': 'application/json'
+    }}, function (error, response, body) {
+    res.json(JSON.parse(body));
+  });
 }

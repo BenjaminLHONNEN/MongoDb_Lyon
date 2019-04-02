@@ -51,6 +51,7 @@ export class MapDistrictComponent implements OnInit {
       style: this.style,
       center: [this.long, this.lat]
     });
+    this.map.scrollZoom.disable();
     this.map.addControl(new mapboxgl.NavigationControl());
 
     this.map.on('load', (event) => {

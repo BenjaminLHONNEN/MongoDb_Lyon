@@ -25,13 +25,11 @@ export class MapTouristicAreaComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('ngOnInit');
-    this.touristicAreas = this.touristicAreaService.getDistrictNear(this.long, this.lat);
+    this.touristicAreas = this.touristicAreaService.getTouristicAreaNear(this.long, this.lat, 30);
     this.initialiseMap();
   }
 
   private initialiseMap() {
-    console.log('initialiseMap');
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         this.lat = position.coords.latitude;
@@ -48,27 +46,20 @@ export class MapTouristicAreaComponent implements OnInit {
     this.detailElement.nativeElement.classList.remove('display');
   }
 
-  setDetail(value) {
-    this.touristicArea = value;
-  }
-
   private buildMap() {
-    console.log('buildMap');
     this.map = new mapboxgl.Map({
       container: 'map',
-      zoom: 15,
+      zoom: 18,
       style: this.style,
       center: [this.long, this.lat]
     });
+    this.map.scrollZoom.disable();
     this.map.addControl(new mapboxgl.NavigationControl());
 
-    const setTouristicArea = this.setDetail;
     const detailElement = this.detailElement;
     this.map.on('click', 'touristicAreas', (e) => {
-      console.log(e.features);
       this.touristicArea = e.features[0];
       detailElement.nativeElement.classList.add('display');
-      console.log(detailElement);
     });
 
     const map = this.map;
@@ -79,6 +70,46 @@ export class MapTouristicAreaComponent implements OnInit {
     this.map.on('mouseleave', 'touristicAreas', function () {
       map.getCanvas().style.cursor = '';
     });
+    this.map.on('mouseup', () => {
+      if (this.lat !== this.map.getCenter().lat || this.long !== this.map.getCenter().lng) {
+        this.lat = this.map.getCenter().lat;
+        this.long = this.map.getCenter().lng;
+        this.map.removeLayer('touristicAreas');
+        this.map.removeSource('touristicAreas');
+        this.touristicAreas = this.touristicAreaService.getTouristicAreaNear(this.long, this.lat);
+        this.touristicAreas.subscribe(touristicAreas => {
+          this.touristicAreasArray = touristicAreas;
+          this.map.addSource('touristicAreas', {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: []
+            }
+          });
+          this.source = this.map.getSource('touristicAreas');
+          const data = new TouristicAreaCollection(touristicAreas);
+          this.source.setData(data);
+          this.map.addLayer({
+            id: 'touristicAreas',
+            source: 'touristicAreas',
+            'type': 'symbol',
+            layout: {
+              'text-field': '{message}',
+              'text-size': 24,
+              'text-transform': 'uppercase',
+              'icon-image': 'monument-15',
+              'text-offset': [0, 1.5]
+            },
+            paint: {
+              'text-color': '#F16624',
+              'text-halo-color': '#FFF',
+              'text-halo-width': 2
+            }
+          });
+        });
+      }
+    });
+
     this.map.on('load', () => {
       this.touristicAreas.subscribe(touristicAreas => {
         this.touristicAreasArray = touristicAreas;
@@ -114,6 +145,8 @@ export class MapTouristicAreaComponent implements OnInit {
   }
 
   clicOn(touristicAreaModel: TouristicAreaModel) {
+    this.touristicArea = touristicAreaModel;
+    this.detailElement.nativeElement.classList.add('display');
     this.flyTo(touristicAreaModel.geometry.coordinates[0], touristicAreaModel.geometry.coordinates[1]);
   }
 

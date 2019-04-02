@@ -32,6 +32,7 @@ async function getAllTouristicArea() {
 }
 
 async function getAllVelovNear(long, latt, distance=1000) {
+  console.log(distance);
   return await Velov.find({
     geometry: {
       $near: {
@@ -93,11 +94,13 @@ async function dropVelov() {
     console.log('velovs collection dropped');
   });
 }
+
 async function dropDistrict() {
   await mongoose.connection.collections['districts'].drop( function(err) {
     console.log('districts collection dropped');
   });
 }
+
 async function dropTouristicArea() {
   await mongoose.connection.collections['touristicareas'].drop( function(err) {
     console.log('touristicareas collection dropped');

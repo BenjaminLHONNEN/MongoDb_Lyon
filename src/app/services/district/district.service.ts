@@ -12,8 +12,8 @@ export class DistrictService {
     mapboxgl.accessToken = environment.mapbox.accessToken;
   }
 
-  getDistrictNear(long, latt) {
-    return this.http.get('http://localhost:4040/api/data/district/' + long + '/' + latt);
+  getDistrictNear(long, latt, distance = 500) {
+    return this.http.get('http://localhost:4040/api/data/district/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
   }
 
   getDistricts() {
