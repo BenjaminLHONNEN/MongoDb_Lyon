@@ -10,6 +10,6 @@ export class AdressServiceService {
   }
 
   searchAdress(search: string) {
-    return this.http.get('http://localhost:4040/api/data/adress/' + search);
+    return this.http.get('/api/data/adress/' + search);
   }
 }

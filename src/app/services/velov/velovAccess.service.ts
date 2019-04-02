@@ -15,10 +15,10 @@ export class VelovAccess {
   }
 
   getVelovNear(long, latt, distance = 500) {
-    return this.http.get(this.API_URL + '/data/velov/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
+    return this.http.get('/api/data/velov/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
   }
 
   getVelovDetail(gid) {
-    return this.http.get(this.API_URL + '/data/velov/' + gid);
+    return this.http.get( '/api/data/velov/' + gid);
   }
 }

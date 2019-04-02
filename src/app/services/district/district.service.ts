@@ -13,14 +13,14 @@ export class DistrictService {
   }
 
   getDistrictNear(long, latt, distance = 500) {
-    return this.http.get('http://localhost:4040/api/data/district/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
+    return this.http.get('/api/data/district/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
   }
 
   getDistricts() {
-    return this.http.get('http://localhost:4040/api/data/district');
+    return this.http.get('/api/data/district');
   }
 
   getDistrictDetail(gid) {
-    return this.http.get('http://localhost:4040/api/data/district/' + gid);
+    return this.http.get('/api/data/district/' + gid);
   }
 }

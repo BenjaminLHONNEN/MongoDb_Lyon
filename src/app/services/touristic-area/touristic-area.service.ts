@@ -13,14 +13,14 @@ export class TouristicAreaService {
   }
 
   getTouristicAreaNear(long, latt, distance = 500) {
-    return this.http.get('http://localhost:4040/api/data/touristicArea/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
+    return this.http.get('/api/data/touristicArea/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
   }
 
   getTouristicAreas() {
-    return this.http.get('http://localhost:4040/api/data/touristicArea');
+    return this.http.get('/api/data/touristicArea');
   }
 
   getTouristicAreaDetail(gid) {
-    return this.http.get('http://localhost:4040/api/data/touristicArea/' + gid);
+    return this.http.get('/api/data/touristicArea/' + gid);
   }
 }
