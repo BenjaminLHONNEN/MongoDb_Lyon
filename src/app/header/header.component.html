@@ -4,7 +4,7 @@
     <span class="example-spacer"></span>
     <a class="links side" [routerLink]="['/map-district']" *ngIf="!user">Quartiers de Lyon</a>
     <a class="links side" [routerLink]="['/map-touristic-area']" *ngIf="!user">Lieu Touristique</a>
-    <a class="links side" [routerLink]="['/map-velov']" *ngIf="!user">Info Velob</a>
+    <a class="links side" [routerLink]="['/map-velov']" *ngIf="!user">Info Velov</a>
     <a class="links side" [routerLink]="['/auth/login']" *ngIf="!user">Login</a>
     <div>
       <a class="links side" *ngIf="user" [matMenuTriggerFor]="menu">
