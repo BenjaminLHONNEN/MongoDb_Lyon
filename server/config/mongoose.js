@@ -8,8 +8,8 @@ const config = require('./config');
 const mongoUri = config.mongo.host;
 mongoose.connect(mongoUri, {
   keepAlive: 1,
-  "user": "mongo-readwrite",
-  "pass": "mongoreadwrite@2K19",
+  //"user": "mongo-readwrite",
+  //"pass": "mongoreadwrite@2K19",
   "useMongoClient": true
 });
 mongoose.connection.on('error', () => {

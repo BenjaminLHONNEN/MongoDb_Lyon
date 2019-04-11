@@ -56,11 +56,24 @@ async function getVelovNear(req, res) {
   res.json(await cronController.getAllVelovNear(req.params.long, req.params.latt, req.query.distance));
 }
 async function getDistrictNear(req, res){
-  console.log(req.query.distance);
   res.json(await cronController.getAllDistrictNear(req.params.long, req.params.latt, req.query.distance));
 }
 async function getTouristicAreaUrlNear(req, res){
   res.json(await cronController.getAllTouristicAreaNear(req.params.long, req.params.latt, req.query.distance));
+}
+
+router.get("/velov/:nelong/:nelatt/:swlong/:swlatt", asyncHandler(getVelovBetween));
+router.get("/district/:nelong/:nelatt/:swlong/:swlatt", asyncHandler(getDistrictBetween));
+router.get("/touristicArea/:nelong/:nelatt/:swlong/:swlatt", asyncHandler(getTouristicAreaUrlBetween));
+
+async function getVelovBetween(req, res) {
+  res.json(await cronController.getAllVelovBetween(req.params.nelong, req.params.nelatt,req.params.swlong, req.params.swlatt));
+}
+async function getDistrictBetween(req, res){
+  res.json(await cronController.getAllDistrictBetween(req.params.nelong, req.params.nelatt,req.params.swlong, req.params.swlatt));
+}
+async function getTouristicAreaUrlBetween(req, res){
+  res.json(await cronController.getAllTouristicAreaBetween(req.params.nelong, req.params.nelatt,req.params.swlong, req.params.swlatt));
 }
 
 router.get("/adress/:search", asyncHandler(searchAdress));

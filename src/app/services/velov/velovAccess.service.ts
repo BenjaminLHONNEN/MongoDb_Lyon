@@ -15,10 +15,14 @@ export class VelovAccess {
   }
 
   getVelovNear(long, latt, distance = 500) {
-    return this.http.get('/api/data/velov/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
+    return this.http.get('http://localhost:4040/api/data/velov/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
+  }
+
+  getVelovBetween(nelong, nelatt, swlong, swlatt) {
+    return this.http.get('http://localhost:4040/api/data/velov/' + nelong + '/' + nelatt + '/' + swlong + '/' + swlatt);
   }
 
   getVelovDetail(gid) {
-    return this.http.get( '/api/data/velov/' + gid);
+    return this.http.get( 'http://localhost:4040/api/data/velov/' + gid);
   }
 }

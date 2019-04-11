@@ -73,10 +73,12 @@ export class GlobalComponent implements OnInit {
     this.map.addControl(new mapboxgl.NavigationControl());
 
     this.map.on('load', (event) => {
-      this.districtService.getDistrictNear(this.long, this.lat, 200).subscribe((districts: Array<DistrictModel>) => {
+      const pos = this.map.getBounds();
+
+      this.districtService.getDistrictBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat).subscribe((districts: Array<DistrictModel>) => {
         this.setupDistricts(districts);
       });
-      this.touristicAreaService.getTouristicAreaNear(this.long, this.lat, 50).subscribe((touristicAreas: Array<TouristicAreaModel>) => {
+      this.touristicAreaService.getTouristicBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat).subscribe((touristicAreas: Array<TouristicAreaModel>) => {
         this.setupTouristicArea(touristicAreas);
         this.map.on('mouseenter', 'touristicAreas', () => {
           this.map.getCanvas().style.cursor = 'pointer';
@@ -86,7 +88,7 @@ export class GlobalComponent implements OnInit {
           this.map.getCanvas().style.cursor = '';
         });
       });
-      this.velovService.getVelovNear(this.long, this.lat, 50).subscribe((velovs: Array<VelovModel>) => {
+      this.velovService.getVelovBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat).subscribe((velovs: Array<VelovModel>) => {
         this.setupVelov(velovs);
         this.map.on('mouseenter', 'lstVelovs', () => {
           this.map.getCanvas().style.cursor = 'pointer';
@@ -102,7 +104,8 @@ export class GlobalComponent implements OnInit {
       this.map.on('click', 'lstVelovs', e => {
         this.clicOnVelov(e.features[0]);
       });
-      this.map.on('mouseup', () => {
+      this.map.on('dragend', (e) => {
+        console.log(e);
         if (this.lat !== this.map.getCenter().lat || this.long !== this.map.getCenter().lng) {
           this.onMapPositionChange();
         }
@@ -113,6 +116,13 @@ export class GlobalComponent implements OnInit {
   onMapPositionChange() {
     this.lat = this.map.getCenter().lat;
     this.long = this.map.getCenter().lng;
+
+    console.log(this.map.getBounds());
+    console.log(this.map.getBounds()._ne.lng > this.map.getBounds()._sw.lng);
+    console.log(this.map.getBounds()._ne.lat > this.map.getBounds()._sw.lat);
+
+    const pos = this.map.getBounds();
+
     this.map.removeLayer('touristicAreas');
     this.map.removeSource('touristicAreas');
     this.map.removeLayer('lstVelovs');
@@ -122,16 +132,16 @@ export class GlobalComponent implements OnInit {
       this.map.removeLayer('district-line-' + d.properties.gid);
       this.map.removeSource('district' + d.properties.gid);
     }
-    this.districtService.getDistrictNear(this.long, this.lat, 200)
+    this.districtService.getDistrictBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
       .subscribe((districts: Array<DistrictModel>) => {
         this.setupDistricts(districts);
       });
-    this.touristicAreaService.getTouristicAreaNear(this.long, this.lat, 50)
+    this.touristicAreaService.getTouristicBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
       .subscribe((touristicAreasReloaded: Array<TouristicAreaModel>) => {
         this.setupTouristicArea(touristicAreasReloaded);
       });
 
-    this.velovService.getVelovNear(this.long, this.lat, 50)
+    this.velovService.getVelovBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
       .subscribe((velovs: Array<VelovModel>) => {
         this.setupVelov(velovs);
       });
