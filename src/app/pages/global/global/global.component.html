@@ -100,7 +100,7 @@
         </ng-template>
 
         <ng-container *ngIf="detailVelov.properties.status === 'OPEN'; else elseTemplateClose">
-          <p [class.is-open]="detailVelov.properties.status === 'OPEN'">Status : {{detailVelov.properties.status}}
+          <p [class.is-open]="detailVelov.properties.status === 'OPEN'">Status : {{detailVelov.properties.status === 'OPEN' ? 'Ouvert' : 'Fermé'}}
           </p>
         </ng-container>
         <ng-template #elseTemplateClose>
