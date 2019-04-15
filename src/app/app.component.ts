@@ -57,6 +57,8 @@ export class AppComponent implements OnInit {
 
   registerSvgIcons() {
     [
+      'arrow-right',
+      'search',
       'close',
       'add',
       'add-blue',

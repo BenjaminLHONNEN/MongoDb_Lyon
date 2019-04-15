@@ -1,37 +1,68 @@
-.map{
+.map {
   height: 90vh;
   width: 80vw;
 }
-.menu{
+
+.menu {
   width: 20vw;
   padding: 20px;
-  background-color: #3F3F3F;
+  background-color: #bdc3c7;
   overflow-y: scroll;
   overflow-x: hidden;
   color: white;
   position: relative;
-  .menu-item{
+
+  .menu-item {
     cursor: pointer;
   }
 }
 
-.adressList{
+.adressList {
   width: 100%;
   list-style: none;
   padding: 0;
 }
-.adressList li{
+
+.adressList li {
   border-bottom: 1px solid white;
 }
 
-.adressList li:last-child{
+.adressList li:last-child {
   border-bottom: none;
 }
 
-.menu-detail.display{
+.no-style-list {
+  padding: 0;
+  list-style: none;
+}
+
+.padding-and-separator-list li {
+  padding: 10px;
+  border-bottom: white 1px solid;
+  color: white;
+  transition: color 0.3s, background-color 0.3s;
+}
+
+.pointer{
+  cursor: pointer;
+}
+
+.padding-and-separator-list li:hover {
+  padding: 10px;
+  border-bottom: white 1px solid;
+  color: #222222;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.padding-and-separator-list li:last-child {
+  border-bottom: none;
+}
+
+.menu-detail.display {
   left: 0;
 }
-.menu-detail{
+
+.menu-detail {
   z-index: 1000;
   position: absolute;
   width: 20vw;

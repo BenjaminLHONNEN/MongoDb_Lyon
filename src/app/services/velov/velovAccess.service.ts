@@ -18,6 +18,10 @@ export class VelovAccess {
     return this.http.get(environment.UrlApi + '/data/velov/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
   }
 
+  getVelovNearLimit(long, latt, limit = 5) {
+    return this.http.get(environment.UrlApi + '/data/velovlimit/' + long + '/' + latt + (limit !== 5 ? '?limit=' + limit : ''));
+  }
+
   getVelovBetween(nelong, nelatt, swlong, swlatt) {
     console.log(environment.UrlApi + '/data/velov/' + nelong + '/' + nelatt + '/' + swlong + '/' + swlatt);
     return this.http.get(environment.UrlApi + '/data/velov/' + nelong + '/' + nelatt + '/' + swlong + '/' + swlatt);

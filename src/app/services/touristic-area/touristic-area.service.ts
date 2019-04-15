@@ -15,6 +15,9 @@ export class TouristicAreaService {
   getTouristicAreaNear(long, latt, distance = 500) {
     return this.http.get(environment.UrlApi + '/data/touristicArea/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
   }
+  getTouristicAreaNearLimit(long, latt, limit = 5) {
+    return this.http.get(environment.UrlApi + '/data/touristicArealimit/' + long + '/' + latt + (limit !== 5 ? '?limit=' + limit : ''));
+  }
 
   getTouristicBetween(nelong, nelatt, swlong, swlatt) {
     return this.http.get(environment.UrlApi + '/data/touristicArea/' + nelong + '/' + nelatt + '/' + swlong + '/' + swlatt);

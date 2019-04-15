@@ -16,6 +16,7 @@ import {AdressServiceService} from '../../../services/adress/adress-service.serv
 export class GlobalComponent implements OnInit {
 
   @ViewChild('detailElement') detailElement: ElementRef;
+  @ViewChild('velo') veloImage: HTMLImageElement;
 
   displayVelov = true;
   displayDistricts = false;
@@ -25,17 +26,22 @@ export class GlobalComponent implements OnInit {
   displayDistrictsLoaded = false;
   displayTouristicAreaLoaded = false;
 
+  nearestTouristicAreas: Array<TouristicAreaModel> = [];
+  nearestRestaurants: Array<TouristicAreaModel>;
+  nearestVelovs: Array<VelovModel> = [];
+
   isMapLoaded = false;
 
   map: mapboxgl.Map;
   lat = 45.745672;
   long = 4.839269;
-  style = 'mapbox://styles/mapbox/outdoors-v9';
+  style = 'mapbox://styles/mapbox/light-v9';
 
   source: any;
 
   districts: Array<DistrictModel>;
   touristicAreas: Array<TouristicAreaModel>;
+  restaurants: Array<TouristicAreaModel>;
   velovs: Array<VelovModel>;
 
   detailVelov: VelovModel;
@@ -50,9 +56,22 @@ export class GlobalComponent implements OnInit {
     this.adresses = {features: []};
   }
 
+  setNearestTouristicArea() {
+    const mapPos = this.map.getCenter();
+    this.touristicAreaService.getTouristicAreaNearLimit(mapPos.lng, mapPos.lat).subscribe((touristicAreas: Array<TouristicAreaModel>) => {
+      this.nearestTouristicAreas = touristicAreas;
+    });
+  }
+
+  setNearestVelov() {
+    const mapPos = this.map.getCenter();
+    this.velovService.getVelovNearLimit(mapPos.lng, mapPos.lat).subscribe((velovs: Array<VelovModel>) => {
+      this.nearestVelovs = velovs;
+    });
+  }
+
   goToSearch(search) {
     this.flyTo(search.geometry.coordinates[0], search.geometry.coordinates[1]);
-    this.onMapPositionChange();
   }
 
   onSearchKeyPress(e) {
@@ -68,12 +87,12 @@ export class GlobalComponent implements OnInit {
   }
 
   private initialiseMap() {
+    this.buildMap();
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         this.flyTo(position.coords.longitude, position.coords.latitude);
       });
     }
-    this.buildMap();
   }
 
   private buildMap() {
@@ -83,12 +102,37 @@ export class GlobalComponent implements OnInit {
       style: this.style,
       center: [this.long, this.lat]
     });
+
+    this.map.loadImage('/assets/images/monument.png', (error, data) => {
+      this.map.addImage('monument', data);
+    });
+    this.map.loadImage('/assets/images/restaurant.png', (error, data) => {
+      this.map.addImage('restaurant', data);
+    });
+    this.map.loadImage('/assets/images/velo.png', (error, data) => {
+      this.map.addImage('velo', data);
+    });
+
     this.map.scrollZoom.disable();
     this.map.addControl(new mapboxgl.NavigationControl());
 
     this.map.on('dragend', (e) => {
       console.log(e);
       if (this.lat !== this.map.getCenter().lat || this.long !== this.map.getCenter().lng) {
+        if (this.isMapLoaded) {
+          this.onMapPositionChange();
+        }
+      }
+    });
+    this.map.on('zoomend', (e) => {
+      if (this.isMapLoaded) {
+        console.log('zoomend');
+        this.onMapPositionChange();
+      }
+    });
+    this.map.on('boxzoomend', (e) => {
+      console.log('boxzoomend');
+      if (this.isMapLoaded) {
         this.onMapPositionChange();
       }
     });
@@ -96,13 +140,16 @@ export class GlobalComponent implements OnInit {
     this.map.on('load', (event) => {
         this.isMapLoaded = true;
         this.reloadMap();
+        console.log(this.map.getStyle());
       }
     );
 
+    this.setNearestTouristicArea();
+    this.setNearestVelov();
   }
 
   reloadMap() {
-
+    this.isMapLoaded = false;
     const pos = this.map.getBounds();
 
     if (this.displayDistricts) {
@@ -114,41 +161,41 @@ export class GlobalComponent implements OnInit {
     if (this.displayTouristicArea) {
       this.touristicAreaService.getTouristicBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
         .subscribe((touristicAreas: Array<TouristicAreaModel>) => {
-
           this.setupTouristicArea(touristicAreas);
-          this.map.on('mouseenter', 'touristicAreas', () => {
-            this.map.getCanvas().style.cursor = 'pointer';
-          });
-
-          this.map.on('mouseleave', 'touristicAreas', () => {
-            this.map.getCanvas().style.cursor = '';
-          });
-
-          this.map.on('click', 'touristicAreas', (e) => {
-            this.clicOnTouristicArea(e.features[0]);
-          });
         });
-
     }
+
+    this.map.on('mouseenter', 'touristicAreas', () => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    });
+
+    this.map.on('mouseleave', 'touristicAreas', () => {
+      this.map.getCanvas().style.cursor = '';
+    });
+
+    this.map.on('click', 'touristicAreas', (e) => {
+      this.clicOnTouristicArea(e.features[0]);
+    });
+
     if (this.displayVelov) {
       this.velovService.getVelovBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
         .subscribe((velovs: Array<VelovModel>) => {
-
           this.setupVelov(velovs);
-
-          this.map.on('mouseenter', 'lstVelovs', () => {
-            this.map.getCanvas().style.cursor = 'pointer';
-          });
-
-          this.map.on('mouseleave', 'lstVelovs', () => {
-            this.map.getCanvas().style.cursor = '';
-          });
         });
-
-      this.map.on('click', 'lstVelovs', e => {
-        this.clicOnVelov(e.features[0]);
-      });
     }
+
+    this.map.on('click', 'lstVelovs', e => {
+      this.clicOnVelov(e.features[0]);
+    });
+
+    this.map.on('mouseenter', 'lstVelovs', () => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    });
+
+    this.map.on('mouseleave', 'lstVelovs', () => {
+      this.map.getCanvas().style.cursor = '';
+    });
+    this.isMapLoaded = true;
   }
 
   onDisplayFilterChange() {
@@ -156,26 +203,58 @@ export class GlobalComponent implements OnInit {
   }
 
   onMapPositionChange() {
+    console.log('onMapPositionChange');
+    const mapPos = this.map.getCenter();
+    this.long = mapPos.lng;
+    this.lat = mapPos.lat;
     if (this.isMapLoaded) {
+      this.isMapLoaded = false;
       this.lat = this.map.getCenter().lat;
       this.long = this.map.getCenter().lng;
 
       const pos = this.map.getBounds();
 
-      if (this.displayVelovLoaded) {
-        this.map.removeLayer('lstVelovs');
-        this.map.removeSource('lstVelovs');
-      }
-      if (this.displayDistrictsLoaded) {
-        for (const d of this.districts) {
-          this.map.removeLayer('district-' + d.properties.gid);
-          this.map.removeLayer('district-line-' + d.properties.gid);
-          this.map.removeSource('district' + d.properties.gid);
+      try {
+        if (this.displayVelovLoaded) {
+          if (this.map.getLayer('lstVelovs')) {
+            this.map.removeLayer('lstVelovs');
+          }
+          if (this.map.getSource('lstVelovs')) {
+            this.map.removeSource('lstVelovs');
+          }
         }
+      } finally {
       }
-      if (this.displayTouristicAreaLoaded) {
-        this.map.removeLayer('touristicAreas');
-        this.map.removeSource('touristicAreas');
+
+      try {
+        if (this.displayDistrictsLoaded) {
+          for (const d of this.districts) {
+            if (this.map.getLayer('district-' + d.properties.gid)) {
+              this.map.removeLayer('district-' + d.properties.gid);
+            }
+
+            if (this.map.getLayer('district-line-' + d.properties.gid)) {
+              this.map.removeLayer('district-line-' + d.properties.gid);
+            }
+
+            if (this.map.getSource('district' + d.properties.gid)) {
+              this.map.removeSource('district' + d.properties.gid);
+            }
+          }
+        }
+      } finally {
+      }
+
+      try {
+        if (this.displayTouristicAreaLoaded) {
+          if (this.map.getLayer('touristicAreas')) {
+            this.map.removeLayer('touristicAreas');
+          }
+          if (this.map.getSource('touristicAreas')) {
+            this.map.removeSource('touristicAreas');
+          }
+        }
+      } finally {
       }
 
 
@@ -208,6 +287,10 @@ export class GlobalComponent implements OnInit {
       } else {
         this.displayVelovLoaded = false;
       }
+
+      this.setNearestTouristicArea();
+      this.setNearestVelov();
+      this.isMapLoaded = true;
     }
   }
 
@@ -233,7 +316,8 @@ export class GlobalComponent implements OnInit {
         'text-field': '{name}',
         'text-size': 11,
         'text-transform': 'uppercase',
-        'icon-image': 'bicycle-share-15',
+        'icon-image': 'velo',
+        'icon-size': 0.35,
         'text-offset': [0, 1.5]
       },
       paint: {
@@ -243,7 +327,11 @@ export class GlobalComponent implements OnInit {
   }
 
   setupTouristicArea(touristicAreas: Array<TouristicAreaModel>) {
+
+    const data = new TouristicAreaCollection(touristicAreas);
     this.touristicAreas = touristicAreas;
+
+
     this.map.addSource('touristicAreas', {
       type: 'geojson',
       data: {
@@ -252,7 +340,6 @@ export class GlobalComponent implements OnInit {
       }
     });
     this.source = this.map.getSource('touristicAreas');
-    const data = new TouristicAreaCollection(touristicAreas);
     this.source.setData(data);
     this.map.addLayer({
       id: 'touristicAreas',
@@ -262,7 +349,8 @@ export class GlobalComponent implements OnInit {
         'text-field': '{nom}',
         'text-size': 11,
         'text-transform': 'uppercase',
-        'icon-image': 'monument-15',
+        'icon-image': 'monument',
+        'icon-size': 0.3,
         'text-offset': [0, 1.5]
       },
       paint: {
@@ -359,6 +447,7 @@ export class GlobalComponent implements OnInit {
   }
 
   flyTo(long, latt) {
+    console.log('flyTo');
     this.long = long;
     this.lat = latt;
     this.map.flyTo({
@@ -367,4 +456,20 @@ export class GlobalComponent implements OnInit {
     this.onMapPositionChange();
   }
 
+  distanceBetween(lat1, lon1, lat2, long2) {
+    const R = 6371; // km (change this constant to get miles)
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (long2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c;
+    if (d > 1) {
+      return Math.round(d) + 'km';
+    } else if (d <= 1) {
+      return Math.round(d * 1000) + 'm';
+    }
+    return d;
+  }
 }

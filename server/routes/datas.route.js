@@ -62,6 +62,19 @@ async function getTouristicAreaUrlNear(req, res){
   res.json(await cronController.getAllTouristicAreaNear(req.params.long, req.params.latt, req.query.distance));
 }
 
+router.get("/velovlimit/:long/:latt", asyncHandler(getVelovNearestLimit));
+router.get("/touristicArealimit/:long/:latt", asyncHandler(getTouristicAreaUrlNearestLimit));
+
+async function getVelovNearestLimit(req, res) {
+  let test = await cronController.getNearestVelovNear(req.params.long, req.params.latt, req.query.limit);
+  console.log(test);
+  res.json(test);
+}
+
+async function getTouristicAreaUrlNearestLimit(req, res){
+  res.json(await cronController.getNearestTouristicAreaNear(req.params.long, req.params.latt, req.query.limit));
+}
+
 router.get("/velov/:nelong/:nelatt/:swlong/:swlatt", asyncHandler(getVelovBetween));
 router.get("/district/:nelong/:nelatt/:swlong/:swlatt", asyncHandler(getDistrictBetween));
 router.get("/touristicArea/:nelong/:nelatt/:swlong/:swlatt", asyncHandler(getTouristicAreaUrlBetween));

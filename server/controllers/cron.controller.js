@@ -21,7 +21,9 @@ module.exports = {
   makeIndexTouristicArea,
   getAllVelovBetween,
   getAllDistrictBetween,
-  getAllTouristicAreaBetween
+  getAllTouristicAreaBetween,
+  getNearestVelovNear,
+  getNearestTouristicAreaNear
 };
 
 async function getAllVelov() {
@@ -34,6 +36,35 @@ async function getAllDistrict() {
 
 async function getAllTouristicArea() {
   return await TouristicArea.find();
+}
+
+async function getNearestVelovNear(long, latt, limit = 5) {
+  console.log("limit : ", limit);
+  return await Velov.find({
+    geometry: {
+      $near: {
+        $geometry: {
+          type: "Point",
+          coordinates: [long, latt]
+        }
+      }
+    }
+  }).limit(limit);
+}
+
+async function getNearestTouristicAreaNear(long, latt, limit = 5) {
+  console.log("limit : ", limit);
+  return await TouristicArea.find({
+    geometry: {
+      $near: {
+        $geometry: {
+          type: "Point",
+          coordinates: [long, latt],
+          "distanceField": "distance"
+        }
+      }
+    }
+  }).limit(limit);
 }
 
 async function getAllVelovNear(long, latt, distance = 1000) {
@@ -93,12 +124,6 @@ async function getAllVelovBetween(nelong, nelatt, swlong, swlatt) {
 }
 
 async function getAllDistrictBetween(nelong, nelatt, swlong, swlatt) {
-  console.log(
-    [nelong, nelatt],
-    [swlong, nelatt],
-    [swlong, swlatt],
-    [nelong, swlatt],
-    [nelong, nelatt],);
   return await District.find({
     geometry: {
       $geoIntersects: {

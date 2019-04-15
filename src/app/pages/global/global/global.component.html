@@ -2,13 +2,16 @@
   <div class="map" id="map"></div>
   <div class="menu">
     <div>
+      <div id="helper">
+      </div>
       <div>
         <mat-form-field style="width: 100%">
           <input matInput [matAutocomplete]="auto" style="width: 100%" type="text" (keyup)="onSearchKeyPress($event)">
+          <mat-icon svgIcon="search"></mat-icon>
         </mat-form-field>
       </div>
       <div>
-        <mat-autocomplete #auto="matAutocomplete" >
+        <mat-autocomplete #auto="matAutocomplete">
           <mat-option (click)="goToSearch(ad)" *ngFor="let ad of adresses.features">
             {{ad.properties.label}}
           </mat-option>
@@ -16,20 +19,50 @@
       </div>
       <div>
         <div>
-          <mat-checkbox type="checkbox" [(ngModel)]="displayVelov" (change)="onDisplayFilterChange()">Afficher les
-            stations Velovs
+          <mat-checkbox [(ngModel)]="displayVelov" (change)="onDisplayFilterChange()">
+            Afficher les stations Velovs
           </mat-checkbox>
         </div>
         <div>
-          <mat-checkbox type="checkbox" [(ngModel)]="displayDistricts" (change)="onDisplayFilterChange()"> Afficher les
-            quartiers
+          <mat-checkbox [(ngModel)]="displayDistricts" (change)="onDisplayFilterChange()">
+            Afficher les quartiers
           </mat-checkbox>
         </div>
         <div>
-          <mat-checkbox type="checkbox" [(ngModel)]="displayTouristicArea" (change)="onDisplayFilterChange()">Afficher
-            les zones touristiques
+          <mat-checkbox [(ngModel)]="displayTouristicArea" (change)="onDisplayFilterChange()">
+            Afficher les zones touristiques
           </mat-checkbox>
         </div>
+      </div>
+      <div *ngIf="displayTouristicArea">
+        <p>
+          Sites touristiques proches :
+        </p>
+        <ul class="no-style-list padding-and-separator-list">
+          <li *ngFor="let touristicArea of nearestTouristicAreas" class="pointer"
+              (click)="flyTo(touristicArea.geometry.coordinates[0], touristicArea.geometry.coordinates[1]); clicOnTouristicArea(touristicArea)">
+            <mat-icon svgIcon="arrow-right"></mat-icon>
+            <span style="vertical-align: super;"> {{touristicArea.properties.nom}} </span>
+            <span style="vertical-align: super;">
+              ({{distanceBetween(touristicArea.geometry.coordinates[1], touristicArea.geometry.coordinates[0], lat, long)}})
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div *ngIf="displayVelov">
+        <p>
+          Station velov :
+        </p>
+        <ul class="no-style-list padding-and-separator-list">
+          <li *ngFor="let velov of nearestVelovs" class="pointer"
+              (click)="flyTo(velov.geometry.coordinates[0], velov.geometry.coordinates[1]);clicOnVelov(velov)">
+            <mat-icon svgIcon="arrow-right" color="#222222"></mat-icon>
+            <span style="vertical-align: super;"> {{velov.properties.name}} </span>
+            <span style="vertical-align: super;">
+              ({{distanceBetween(velov.geometry.coordinates[1], velov.geometry.coordinates[0], lat, long)}})
+            </span>
+          </li>
+        </ul>
       </div>
       <div>
       </div>
@@ -77,3 +110,4 @@
     </div>
   </div>
 </div>
+
