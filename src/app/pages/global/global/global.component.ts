@@ -113,7 +113,6 @@ export class GlobalComponent implements OnInit {
       this.map.addImage('velo', data);
     });
 
-    this.map.scrollZoom.disable();
     this.map.addControl(new mapboxgl.NavigationControl());
 
     this.map.on('dragend', (e) => {
