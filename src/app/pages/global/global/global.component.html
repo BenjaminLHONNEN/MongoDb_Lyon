@@ -44,7 +44,8 @@
             <mat-icon svgIcon="arrow-right"></mat-icon>
             <span style="vertical-align: super;"> {{touristicArea.properties.nom}} </span>
             <span style="vertical-align: super;">
-              ({{distanceBetween(touristicArea.geometry.coordinates[1], touristicArea.geometry.coordinates[0], lat, long)}})
+              ({{distanceBetween(touristicArea.geometry.coordinates[1], touristicArea.geometry.coordinates[0], lat, long)}}
+              )
             </span>
           </li>
         </ul>
@@ -103,7 +104,8 @@
           </p>
         </ng-container>
         <ng-template #elseTemplateClose>
-          <p [class.is-close]="detailVelov.properties.status === 'CLOSE'">Status : {{detailVelov.properties.status}}
+          <p [class.is-close]="detailVelov.properties.status === 'CLOSE'">Status
+            : {{detailVelov.properties.status === 'OPEN' ? 'Ouvert' : 'Fermé'}}
           </p>
         </ng-template>
       </div>
