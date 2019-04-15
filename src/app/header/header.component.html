@@ -2,8 +2,6 @@
   <mat-toolbar color="primary">
     <a [routerLink]="['/']" class="logo"></a>
     <span class="example-spacer"></span>
-    <a class="links side" [routerLink]="['/map-district']" *ngIf="!user">Quartiers de Lyon</a>
-    <a class="links side" [routerLink]="['/map-touristic-area']" *ngIf="!user">Lieu Touristique</a>
-    <a class="links side" [routerLink]="['/map-velov']" *ngIf="!user">Info Velov</a>
+    <a class="links side" [routerLink]="['/']" *ngIf="!user">Carte De Lyon</a>
   </mat-toolbar>
 </header>
