@@ -19,6 +19,7 @@ import { MapDistrictComponent } from './pages/map-district/map-district.componen
 import { MapVelovComponent } from './pages/map-velov/map-velov.component';
 import { MapTouristicAreaComponent } from './pages/map-touristic-area/map-touristic-area.component';
 import { GlobalComponent } from './pages/global/global/global.component';
+import {MatAutocompleteModule, MatCheckboxModule} from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,8 @@ import { GlobalComponent } from './pages/global/global/global.component';
     AuthModule,
     AdminModule,
     AppRoutingModule,
+    MatCheckboxModule,
+    MatAutocompleteModule,
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

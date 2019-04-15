@@ -17,6 +17,16 @@ export class GlobalComponent implements OnInit {
 
   @ViewChild('detailElement') detailElement: ElementRef;
 
+  displayVelov = true;
+  displayDistricts = false;
+  displayTouristicArea = false;
+
+  displayVelovLoaded = true;
+  displayDistrictsLoaded = false;
+  displayTouristicAreaLoaded = false;
+
+  isMapLoaded = false;
+
   map: mapboxgl.Map;
   lat = 45.745672;
   long = 4.839269;
@@ -33,7 +43,10 @@ export class GlobalComponent implements OnInit {
 
   adresses: any;
 
-  constructor(private districtService: DistrictService, private touristicAreaService: TouristicAreaService, private velovService: VelovAccess, private searchAdressService: AdressServiceService) {
+  constructor(private districtService: DistrictService,
+              private touristicAreaService: TouristicAreaService,
+              private velovService: VelovAccess,
+              private searchAdressService: AdressServiceService) {
   }
 
   goToSearch(search) {
@@ -72,79 +85,129 @@ export class GlobalComponent implements OnInit {
     this.map.scrollZoom.disable();
     this.map.addControl(new mapboxgl.NavigationControl());
 
-    this.map.on('load', (event) => {
-      const pos = this.map.getBounds();
-
-      this.districtService.getDistrictBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat).subscribe((districts: Array<DistrictModel>) => {
-        this.setupDistricts(districts);
-      });
-      this.touristicAreaService.getTouristicBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat).subscribe((touristicAreas: Array<TouristicAreaModel>) => {
-        this.setupTouristicArea(touristicAreas);
-        this.map.on('mouseenter', 'touristicAreas', () => {
-          this.map.getCanvas().style.cursor = 'pointer';
-        });
-
-        this.map.on('mouseleave', 'touristicAreas', () => {
-          this.map.getCanvas().style.cursor = '';
-        });
-      });
-      this.velovService.getVelovBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat).subscribe((velovs: Array<VelovModel>) => {
-        this.setupVelov(velovs);
-        this.map.on('mouseenter', 'lstVelovs', () => {
-          this.map.getCanvas().style.cursor = 'pointer';
-        });
-
-        this.map.on('mouseleave', 'lstVelovs', () => {
-          this.map.getCanvas().style.cursor = '';
-        });
-      });
-      this.map.on('click', 'touristicAreas', (e) => {
-        this.clicOnTouristicArea(e.features[0]);
-      });
-      this.map.on('click', 'lstVelovs', e => {
-        this.clicOnVelov(e.features[0]);
-      });
-      this.map.on('dragend', (e) => {
-        console.log(e);
-        if (this.lat !== this.map.getCenter().lat || this.long !== this.map.getCenter().lng) {
-          this.onMapPositionChange();
-        }
-      });
+    this.map.on('dragend', (e) => {
+      console.log(e);
+      if (this.lat !== this.map.getCenter().lat || this.long !== this.map.getCenter().lng) {
+        this.onMapPositionChange();
+      }
     });
+
+    this.map.on('load', (event) => {
+        this.isMapLoaded = true;
+        this.reloadMap();
+      }
+    );
+
   }
 
-  onMapPositionChange() {
-    this.lat = this.map.getCenter().lat;
-    this.long = this.map.getCenter().lng;
-
-    console.log(this.map.getBounds());
-    console.log(this.map.getBounds()._ne.lng > this.map.getBounds()._sw.lng);
-    console.log(this.map.getBounds()._ne.lat > this.map.getBounds()._sw.lat);
+  reloadMap() {
 
     const pos = this.map.getBounds();
 
-    this.map.removeLayer('touristicAreas');
-    this.map.removeSource('touristicAreas');
-    this.map.removeLayer('lstVelovs');
-    this.map.removeSource('lstVelovs');
-    for (const d of this.districts) {
-      this.map.removeLayer('district-' + d.properties.gid);
-      this.map.removeLayer('district-line-' + d.properties.gid);
-      this.map.removeSource('district' + d.properties.gid);
+    if (this.displayDistricts) {
+      this.districtService.getDistrictBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
+        .subscribe((districts: Array<DistrictModel>) => {
+          this.setupDistricts(districts);
+        });
     }
-    this.districtService.getDistrictBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
-      .subscribe((districts: Array<DistrictModel>) => {
-        this.setupDistricts(districts);
-      });
-    this.touristicAreaService.getTouristicBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
-      .subscribe((touristicAreasReloaded: Array<TouristicAreaModel>) => {
-        this.setupTouristicArea(touristicAreasReloaded);
-      });
+    if (this.displayTouristicArea) {
+      this.touristicAreaService.getTouristicBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
+        .subscribe((touristicAreas: Array<TouristicAreaModel>) => {
 
-    this.velovService.getVelovBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
-      .subscribe((velovs: Array<VelovModel>) => {
-        this.setupVelov(velovs);
+          this.setupTouristicArea(touristicAreas);
+          this.map.on('mouseenter', 'touristicAreas', () => {
+            this.map.getCanvas().style.cursor = 'pointer';
+          });
+
+          this.map.on('mouseleave', 'touristicAreas', () => {
+            this.map.getCanvas().style.cursor = '';
+          });
+
+          this.map.on('click', 'touristicAreas', (e) => {
+            this.clicOnTouristicArea(e.features[0]);
+          });
+        });
+
+    }
+    if (this.displayVelov) {
+      this.velovService.getVelovBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
+        .subscribe((velovs: Array<VelovModel>) => {
+
+          this.setupVelov(velovs);
+
+          this.map.on('mouseenter', 'lstVelovs', () => {
+            this.map.getCanvas().style.cursor = 'pointer';
+          });
+
+          this.map.on('mouseleave', 'lstVelovs', () => {
+            this.map.getCanvas().style.cursor = '';
+          });
+        });
+
+      this.map.on('click', 'lstVelovs', e => {
+        this.clicOnVelov(e.features[0]);
       });
+    }
+  }
+
+  onDisplayFilterChange() {
+    this.onMapPositionChange();
+  }
+
+  onMapPositionChange() {
+    if (this.isMapLoaded) {
+      this.lat = this.map.getCenter().lat;
+      this.long = this.map.getCenter().lng;
+
+      const pos = this.map.getBounds();
+
+      if (this.displayVelovLoaded) {
+        this.map.removeLayer('lstVelovs');
+        this.map.removeSource('lstVelovs');
+      }
+      if (this.displayDistrictsLoaded) {
+        for (const d of this.districts) {
+          this.map.removeLayer('district-' + d.properties.gid);
+          this.map.removeLayer('district-line-' + d.properties.gid);
+          this.map.removeSource('district' + d.properties.gid);
+        }
+      }
+      if (this.displayTouristicAreaLoaded) {
+        this.map.removeLayer('touristicAreas');
+        this.map.removeSource('touristicAreas');
+      }
+
+
+      if (this.displayDistricts) {
+        this.districtService.getDistrictBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
+          .subscribe((districts: Array<DistrictModel>) => {
+            this.setupDistricts(districts);
+            this.displayDistrictsLoaded = true;
+          });
+      } else {
+        this.displayDistrictsLoaded = false;
+      }
+
+      if (this.displayTouristicArea) {
+        this.touristicAreaService.getTouristicBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
+          .subscribe((touristicAreasReloaded: Array<TouristicAreaModel>) => {
+            this.setupTouristicArea(touristicAreasReloaded);
+            this.displayTouristicAreaLoaded = true;
+          });
+      } else {
+        this.displayTouristicAreaLoaded = false;
+      }
+
+      if (this.displayVelov) {
+        this.velovService.getVelovBetween(pos._ne.lng, pos._ne.lat, pos._sw.lng, pos._sw.lat)
+          .subscribe((velovs: Array<VelovModel>) => {
+            this.setupVelov(velovs);
+            this.displayVelovLoaded = true;
+          });
+      } else {
+        this.displayVelovLoaded = false;
+      }
+    }
   }
 
   setupVelov(velovs: Array<VelovModel>) {
@@ -167,7 +230,7 @@ export class GlobalComponent implements OnInit {
       type: 'symbol',
       layout: {
         'text-field': '{name}',
-        'text-size': 14,
+        'text-size': 11,
         'text-transform': 'uppercase',
         'icon-image': 'bicycle-share-15',
         'text-offset': [0, 1.5]
@@ -196,7 +259,7 @@ export class GlobalComponent implements OnInit {
       'type': 'symbol',
       layout: {
         'text-field': '{nom}',
-        'text-size': 14,
+        'text-size': 11,
         'text-transform': 'uppercase',
         'icon-image': 'monument-15',
         'text-offset': [0, 1.5]
@@ -300,6 +363,7 @@ export class GlobalComponent implements OnInit {
     this.map.flyTo({
       center: [long, latt]
     });
+    this.onMapPositionChange();
   }
 
 }

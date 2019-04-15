@@ -1,17 +1,34 @@
-
 <div style="display: flex">
   <div class="map" id="map"></div>
   <div class="menu">
     <div>
       <div>
-        <input style="width: 100%" type="text" (keyup)="onSearchKeyPress($event)">
+        <mat-form-field style="width: 100%">
+          <input matInput [matAutocomplete]="auto" style="width: 100%" type="text" (keyup)="onSearchKeyPress($event)">
+        </mat-form-field>
       </div>
       <div>
-        <div style="width: 100%" *ngIf="adresses">
-          <div *ngFor="let ad of adresses.features">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option (click)="goToSearch(ad)" *ngFor="let ad of adresses.features">
             {{ad.properties.label}}
-            <button (click)="goToSearch(ad)"> > </button>
-          </div>
+          </mat-option>
+        </mat-autocomplete>
+      </div>
+      <div>
+        <div>
+          <mat-checkbox type="checkbox" [(ngModel)]="displayVelov" (change)="onDisplayFilterChange()">Afficher les
+            stations Velovs
+          </mat-checkbox>
+        </div>
+        <div>
+          <mat-checkbox type="checkbox" [(ngModel)]="displayDistricts" (change)="onDisplayFilterChange()"> Afficher les
+            quartiers
+          </mat-checkbox>
+        </div>
+        <div>
+          <mat-checkbox type="checkbox" [(ngModel)]="displayTouristicArea" (change)="onDisplayFilterChange()">Afficher
+            les zones touristiques
+          </mat-checkbox>
         </div>
       </div>
       <div>
@@ -25,21 +42,26 @@
         <p>{{detailTouristicArea.properties.commune}}</p>
         <p>Tel: {{detailTouristicArea.properties.telephone}}</p>
         <p>Email: {{detailTouristicArea.properties.email}}</p>
-        <p>Site web : <a target="_blank" [href]="detailTouristicArea.properties.siteweb">{{detailTouristicArea.properties.siteweb}}</a></p>
+        <p>Site web : <a target="_blank"
+                         [href]="detailTouristicArea.properties.siteweb">{{detailTouristicArea.properties.siteweb}}</a>
+        </p>
       </div>
       <div *ngIf="detailVelov">
         <h3>{{detailVelov.properties.name}}</h3>
         <p>{{detailVelov.properties.commune}}</p>
-        <p>{{detailVelov.properties.address}}<span *ngIf="detailVelov.properties.address2 != ''">, {{detailVelov.properties.address2}}</span></p>
+        <p>{{detailVelov.properties.address}}<span
+          *ngIf="detailVelov.properties.address2 != ''">, {{detailVelov.properties.address2}}</span></p>
         <p>Nb de stands disponibles: {{detailVelov.properties.available_bike_stands}}</p>
         <p>Nb de velov disponibles : {{detailVelov.properties.available_bikes}}</p>
 
         <ng-container *ngIf="detailVelov.properties.availability === 'Vert'; else elseTemplateNotAvailability">
-          <p [class.is-open]="detailVelov.properties.availability === 'Vert'">Disponibilité : {{detailVelov.properties.availability}}
+          <p [class.is-open]="detailVelov.properties.availability === 'Vert'">Disponibilité
+            : {{detailVelov.properties.availability}}
           </p>
         </ng-container>
         <ng-template #elseTemplateNotAvailability>
-          <p [class.is-orange]="detailVelov.properties.availability === 'Orange'">Disponibilité : {{detailVelov.properties.availability}}
+          <p [class.is-orange]="detailVelov.properties.availability === 'Orange'">Disponibilité
+            : {{detailVelov.properties.availability}}
           </p>
         </ng-template>
 
