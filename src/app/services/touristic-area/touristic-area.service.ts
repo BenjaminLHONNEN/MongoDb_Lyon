@@ -13,19 +13,19 @@ export class TouristicAreaService {
   }
 
   getTouristicAreaNear(long, latt, distance = 500) {
-    return this.http.get('http://localhost:4040/api/data/touristicArea/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
+    return this.http.get(environment.UrlApi + '/data/touristicArea/' + long + '/' + latt + (distance !== 500 ? '?distance=' + distance : ''));
   }
 
   getTouristicBetween(nelong, nelatt, swlong, swlatt) {
-    return this.http.get('http://localhost:4040/api/data/touristicArea/' + nelong + '/' + nelatt + '/' + swlong + '/' + swlatt);
+    return this.http.get(environment.UrlApi + '/data/touristicArea/' + nelong + '/' + nelatt + '/' + swlong + '/' + swlatt);
   }
 
 
   getTouristicAreas() {
-    return this.http.get('http://localhost:4040/api/data/touristicArea');
+    return this.http.get(environment.UrlApi + '/data/touristicArea');
   }
 
   getTouristicAreaDetail(gid) {
-    return this.http.get('http://localhost:4040/api/data/touristicArea/' + gid);
+    return this.http.get(environment.UrlApi + '/data/touristicArea/' + gid);
   }
 }

@@ -47,6 +47,7 @@ export class GlobalComponent implements OnInit {
               private touristicAreaService: TouristicAreaService,
               private velovService: VelovAccess,
               private searchAdressService: AdressServiceService) {
+    this.adresses = {features: []};
   }
 
   goToSearch(search) {

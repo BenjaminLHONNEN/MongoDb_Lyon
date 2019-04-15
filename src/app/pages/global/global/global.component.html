@@ -8,7 +8,7 @@
         </mat-form-field>
       </div>
       <div>
-        <mat-autocomplete #auto="matAutocomplete">
+        <mat-autocomplete #auto="matAutocomplete" >
           <mat-option (click)="goToSearch(ad)" *ngFor="let ad of adresses.features">
             {{ad.properties.label}}
           </mat-option>
